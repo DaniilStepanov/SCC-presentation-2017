@@ -1,0 +1,79 @@
+\documentclass[11pt,pdf,hyperref={unicode},aspectratio=43]{beamer}
+
+% подключаем кириллицу 
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%листинг кода
+\usepackage{multicol}
+\setlength\columnsep{25pt}
+
+\usepackage{listingsutf8}
+
+\usepackage{svg}
+\setsvg{inkscape = inkscape -z -D}
+
+\lstdefinestyle{base_listing}{
+  extendedchars     = {true},
+  inputencoding     = {utf8}, 
+  basicstyle        = {\ttfamily \tiny},
+  keywordstyle      = {\rmfamily \bfseries},
+  commentstyle      = {\rmfamily \itshape},
+  tabsize           = {2},
+  flexiblecolumns   = {false},
+  frame             = {single},
+  showstringspaces  = {false},
+  breaklines        = {true}, 
+  breakatwhitespace = {true}
+}
+
+\lstdefinelanguage{LLVM-asm}
+{
+  morekeywords = {
+    load, store, malloc, alloca, free, getelementptr,
+    add, sub, insertvalue, extractvalue, icmp, call,
+    define, void, global, ret, common
+  },
+  sensitive   = false,
+  morecomment = [l]{;}
+}
+
+\lstdefinelanguage{PS}
+{
+  morekeywords = {
+    true, false, <nullptr>
+  },
+  basicstyle        = {\ttfamily \scriptsize},
+  sensitive    = true,
+  morecomment  = [l]{---}
+}
+
+\lstdefinestyle{crs_llvm}{
+  style    = {base_listing},
+  language = {LLVM-asm}
+}
+
+\lstdefinestyle{crs_cpp}{
+  style    = {base_listing},
+  language = {C++}
+}
+
+% отключить клавиши навигации
+\setbeamertemplate{navigation symbols}{
+    \insertframenumber\,/\,\inserttotalframenumber
+}
+
+
+% тема оформления
+\usetheme{default}
+
+% цветовая схема
+\usecolortheme{default}
+
+\setbeamercovered{transparent}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
