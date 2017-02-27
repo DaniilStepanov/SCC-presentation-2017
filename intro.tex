@@ -24,12 +24,13 @@
 
 \begin{frame}
 	\frametitle{Performance problem}
-
+	\setbeamercolor{block body}{bg=red!20}
 	\begin{block}{}
 		\centering
 			Most static analyses are pretty limited in their ability to scale to large industrial software and our bounded model checking tool Borealis is not exception 
 	\end{block}
 
+	\setbeamercolor{block body}{bg=blue!20}
 	\begin{block}{}
 		\centering
 		We decided to try an approach of \textit{scaling} Borealis to multiple cores
@@ -38,9 +39,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\setbeamercolor{block title}{bg=white, fg=black}
-\setbeamercolor{block body}{bg=blue!20}
 
 \begin{frame}
 	\frametitle{Bounded model checking}
@@ -56,6 +54,20 @@ of their executions
 	Bounded model checking is extension of model checking, which solves the problem of combinatorial explosion of state space by bounding the infinite branches of program
 	\end{block}
 		
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Bounded model checking}
+The main stages of Bounded model checking algorithm:
+	\begin{itemize}
+		\item Unrolling all loops
+		\item Unrolled program represents as first order logic formula
+		\item Formula combines with any security property
+		\item The resulting formula checking by SAT- or SMT-solver
+	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,7 +155,7 @@ END)->(
 \begin{frame}
 	\frametitle{Program representation}
 	\begin{figure}
-	\includegraphics[width=110mm, keepaspectratio]{image/PSDef}
+	\includegraphics[width=110mm, keepaspectratio]{image/PSdef}
 	\end{figure}
 \end{frame}
 
@@ -155,8 +167,6 @@ END)->(
 \begin{itemize}
 	\item The resulting SMT formulae need to be checked for correctness
 	\item Borealis asks $B \ \wedge \ !Q$ is satisfiable
-	\item If unsatisfiable, $B \ \wedge \ Q$ and the program is correct
-	\item If satisfiable, the program contains a bug
 	\item Process is repeated for every program point which might trigger an error
 \end{itemize}
 \end{frame}
