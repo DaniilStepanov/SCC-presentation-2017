@@ -1,0 +1,100 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Evaluation}
+After implementing Borealis-HPC, we decided to test the prototype in the following configurations:
+	\begin{itemize}
+		\item One process on a local machine
+		\item Eight processes on a local machine
+		\item A number of tests on RSC Tornado using 1, 2, 4, 8, 16 and 32 nodes
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Evalutaion projects}
+\begin{table}[tbh]
+\centering
+\label{table:projects}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|c|c|c|l|}
+\hline
+Name & SLOC & Modules & Description \\ \hline
+\texttt{git} & $340k$ & 49 & distributed revision control system \\ \hline
+\texttt{longs} & $209k$ & 1  & URL shortener \\ \hline
+\texttt{beanstalkd} & $7.5k$ & 1  & simple, fast work queue \\ \hline
+\texttt{zstd} & $42k$  & 3  & fast lossless compression algorithm library \\ \hline
+\texttt{reptyr} & $3.5k$ & 1  & utility for reattaching programs to new terminals \\ \hline
+\end{tabular}
+\end{adjustbox}
+\end{table}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Evaluation results}
+\begin{table}[tbh]
+\centering
+\label{table:projects}
+\begin{adjustbox}{width=110mm}
+\begin{tabular}{|r|c|c|c|c|c|}
+\hline
+\           & $\quad$    \texttt{zstd}       $\quad$
+            & $\quad$    \texttt{git}        $\quad$
+            & $\quad$    \texttt{longs}      $\quad$
+            & $\enspace$ \texttt{beanstalkd} $\enspace$
+            & $\enspace$ \texttt{reptyr}     $\enspace$ \\ \hline
+
+\texttt{SCC 1 process}
+& ---     & 678:23   & ---    & 2:05 & 1:30 \\ \hline
+\texttt{SCC 1 node}
+& 2433:05 & 113:59   & 58:53  & 2:50 & 1:53 \\ \hline
+\texttt{SCC 2 nodes}
+& 2421:35 & 101:22   & 59:00  & 2:12 & 1:32 \\ \hline
+\texttt{SCC 4 nodes}
+& 2419:23 & 96:53    & 61:09  & 2:19 & 1:19 \\ \hline
+\texttt{SCC 8 nodes}
+& 2510:34 & 96:51    & 63:09  & 2:10 & 1:43 \\ \hline
+\texttt{SCC 16 nodes}
+& 2434:05 & 97:26    & 63:06  & 2:37 & 1:34 \\ \hline
+\texttt{SCC 32 nodes}
+& 2346:39 & 107:14   & 63:02  & 2:34 & 1:52 \\ \hline \hline
+\texttt{Local 1 process}
+& 2450:02 & 281:11   & 205:05 & 0:36 & 0:08 \\ \hline
+\texttt{Local 8 processes}
+& 2848:55 & 103:21   & 93:14  & 0:30 & 0:06 \\ \hline
+\end{tabular}
+\end{adjustbox}
+\end{table}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Related works????}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Conclusion}
+Our main takeaways are as follows:
+	\begin{itemize}
+		\item Support for efficient distributed compilation is a must if one expects to benefit from distributing the static analysis across multiple nodes
+		\item Analysis runtime is often decided by several functions in the target software which bottleneck the analysis process
+		\item Compilation frameworks (e.g. LLVM) are not optimized for distributed scenarios and may require a number of workarounds to support HPC
+		\item Optimizing your tool for a single-core scenario may create difficulties when developing a HPC version of that tool 
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+Thnx for attention!!
+\end{frame}

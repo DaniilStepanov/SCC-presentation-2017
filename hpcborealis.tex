@@ -4,6 +4,7 @@
 \setbeamercolor{block body}{bg=blue!20}
 
 \begin{frame}
+\frametitle{HPC Borealis}
 \begin{block}
 	\centering
 	There are two main modes Borealis supports as a compiler replacement: compilation and linking
@@ -54,8 +55,8 @@ There are several ways to distributed compilation:
 \frametitle{Distributed linking}
 There are two ways how one can distribute functions between several processes:
 	\begin{itemize}
-		\item Static distribution
 		\item Dynamic distribution
+		\item Static distribution
 	\end{itemize}
 \end{frame}
 
@@ -63,6 +64,78 @@ There are two ways how one can distribute functions between several processes:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Static distribution}
+\frametitle{Dynamic distribution}
+\setbeamercolor{block body}{bg=blue!20}
+\begin{block}
+	\centering
+	Dynamic distribution is based on a single producer / multiple consumers scheme
+\end{block}
 
+\setbeamercolor{block body}{bg=red!20}
+\begin{block}
+	\centering
+	If a process receives N functions, it also has run auxiliary LLVM passes N times
+\end{block}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Static distribution}
+\setbeamercolor{block body}{bg=blue!20}
+\begin{block}
+	\centering
+	Static distribution can be done via consistent hashing on the rank of the process in the supercomputer cluster.
+\end{block}
+We use the following two rank kinds:
+	\begin{itemize}
+		\item global rank which is same as the MPI rank
+		\item local rank which uniquely identifies the process on its node
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Improving efficiency}
+To improve efficiency, we reinforce method with function complexity estimation, to balance workload between processes. We base our estimation on the following two properties:
+	\begin{itemize}
+		\item Function size
+		\item Number of memory Store, Load and GetElementPointer instructions
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Data synchronization}
+Borealis records the analysis results for every function and does not re-analyze already processed functions. The Persistent Defect Data (PDD) is used for that and contains as entry for every encountered defect as:
+	\begin{itemize}
+		\item Defect location
+		\item Defect type
+		\item SMT result
+	\end{itemize}
+\setbeamercolor{block body}{bg=red!20}
+\begin{block}
+	\centering
+	Transfer a full PDD across all Borealis instances takes a long time, so we synchronize a reduced PDD (rPDD) which is simply a list of already analyzed functions.
+\end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{rPDD synchronization}
+To make the synchronization we utilize a two-staged approach:
+	\begin{itemize}
+		\item Synchronize rPDD between the processes on a single node
+		\item Synchronize rPDD between the nodes
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
