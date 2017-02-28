@@ -70,32 +70,6 @@ The main stages of Bounded model checking algorithm:
 	\end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\setbeamercolor{block title}{bg=white, fg=black}
-\setbeamercolor{block body}{bg=blue!20}
-
-\begin{frame}[fragile]
-	\frametitle{Satisfiability modulo theories}
-	
-	\textbf{SAT problem}:
-	\begin{lstlisting}[style=crs_cpp, basicstyle = {\ttfamily \scriptsize},]
-bool a, b, c, d
-check-sat:
-a & !a & b & c & d
-	\end{lstlisting}
-	
-	\textbf{SMT problem}:
-	\begin{lstlisting}[style=crs_cpp, basicstyle = {\ttfamily \scriptsize},]
-int x, y
-bool a
-check-sat:
-(x + y < 0) & (x = 0) & !(y + 1 = 0)
-	\end{lstlisting}
-			
-\end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
