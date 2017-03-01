@@ -3,11 +3,11 @@
 
 \begin{frame}
 \frametitle{Evaluation}
-After implementing Borealis-HPC, we decided to test the prototype in the following configurations:
+We tested the prototype in the following configurations:
 	\begin{itemize}
 		\item One process on a local\footnote{a machine with Intel Core i7-4790 3.6 GHz processor, 32 GB of RAM and Intel 535 SSD storage} machine
 		\item Eight processes on a local machine
-		\item A number of tests on RSC Tornado using 1, 2, 4, 8, 16 and 32 nodes
+		\item On RSC Tornado using 1, 2, 4, 8, 16 and 32 nodes
 	\end{itemize}
 	 
 \end{frame}
@@ -16,7 +16,7 @@ After implementing Borealis-HPC, we decided to test the prototype in the followi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Evalutaion projects}
+\frametitle{Evaluation projects}
 \begin{table}[tbh]
 \centering
 \label{table:projects}
@@ -81,20 +81,31 @@ Name & SLOC & Modules & Description \\ \hline
 \frametitle{Conclusion}
 Our main takeaways are as follows:
 	\begin{itemize}
-		\item Support for efficient distributed compilation is a must if one expects to benefit from distributing the static analysis across multiple nodes
-		\item Analysis runtime is often decided by several functions in the target software which bottleneck the analysis process
-		\item Compilation frameworks (e.g. LLVM) are not optimized for distributed scenarios and may require a number of workarounds to support HPC
-		\item Optimizing your tool for a single-core scenario may create difficulties when developing a HPC version of that tool 
+		\item Necessarily support for efficient distributed compilation
+		\item Several big functions can be bottleneck the analysis process
+		\item LLVM not optimized for distributed scenarios
+		\item Single-core optimizations may be difficulties for HPC version
 	\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Contact information}
 \texttt{\{abdullin, stepanov, akhin\}@kspt.icc.spbstu.ru} \\ \ \\ \ \\
 Borealis repository: \texttt{https://bitbucket.org/vorpal-research/borealis}
+\\ \ \\ 
+\begin{columns} 
+\column{0.5\textwidth} 
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{image/tmpalogo} 
+	\end{figure}
+\column{0.5\textwidth} 
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{image/polytech_logo_en} 
+	\end{figure}
+\end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -5,16 +5,9 @@
 
 \begin{frame}
 \frametitle{HPC Borealis}
-\begin{block}
-	\centering
-	There are two main modes Borealis supports as a compiler replacement: compilation and linking
-\end{block}
-
-\setbeamercolor{block body}{bg=red!20}
-\begin{block}
-	\centering
-	HPC version needs to support both compilation and linking, but in distributed way
-\end{block}
+	\begin{figure}
+		\includegraphics[width=115mm]{image/compile}
+	\end{figure}	
 \end{frame}
 
 
@@ -35,19 +28,78 @@ There are several ways to distributed compilation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Distributed linking}
-\begin{block}
-	\centering
-	We decided to distribute different SMT queries to different nodes/cores
-\end{block}	
-	Borealis performs analysis on an LLVM IR module, which means there are three options of how one can distribute the work:
+\frametitle{Compilation on the Lustre storage}
 \begin{itemize}
-	\item Module level
-	\item Function level
-	\item Instruction level
+\item Tornado cluster has a shared Lustre storage
+\item Lustre is slow when dealing with multiple small files
+\end{itemize}
+	\begin{figure}
+		\includegraphics[width=70mm]{image/compLustre}
+	\end{figure}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Distribution of intermediate build tree}
+\begin{itemize}
+\item Reduce the CPU time
+\item Build may contain several related compilation/linking phases
+\end{itemize}
+	\begin{figure}
+		\includegraphics[width=70mm]{image/compTree}
+	\end{figure}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Distribution of copies of the analyzed project}
+\begin{itemize}
+\item Compilation is done using standard build tools
+\item We are repeating computations on every node
+\item Don't increase the wall-clock time
+\end{itemize}
+	\begin{figure}
+		\includegraphics[width=70mm]{image/compSource}
+	\end{figure}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Distributed linking}
+\begin{itemize}
+	\item We distribute different SMT queries to different nodes/cores 
+	\item Borealis performs analysis on an LLVM IR module
 \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+
+It means there are options of how one can distribute the work:
+\begin{itemize}
+	\item Module level
+	\begin{itemize}
+	    \item[•] Same as parallel make
+	    \item[•] Not really effective
+	\end{itemize}
+	\item Instruction level
+		\begin{itemize}
+	        \item[•] Need to track dependencies between SMT calls
+	        \item[•] Too complex
+		\end{itemize}
+	\item Function level
+	    \begin{itemize}
+	        \item[•] Middle efficiency
+	        \item[•] Simple realization
+	    \end{itemize}
+\end{itemize}
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -65,17 +117,14 @@ There are two ways how one can distribute functions between several processes:
 
 \begin{frame}
 \frametitle{Dynamic distribution}
-\setbeamercolor{block body}{bg=blue!20}
-\begin{block}
-	\centering
-	Dynamic distribution is based on a single producer / multiple consumers scheme
-\end{block}
-
-\setbeamercolor{block body}{bg=red!20}
-\begin{block}
-	\centering
-	If a process receives N functions, it also has run auxiliary LLVM passes N times
-\end{block}
+\begin{itemize}
+\item Master process distributes functions between several processes
+\item Based on a single producer / multiple consumers scheme
+\item If a process receives N functions, it also has run auxiliary LLVM passes N times
+\end{itemize}
+	\begin{figure}
+		\includegraphics[width=70mm]{image/dynDistr.png}
+	\end{figure}	
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,47 +132,89 @@ There are two ways how one can distribute functions between several processes:
 
 \begin{frame}
 \frametitle{Static distribution}
-\setbeamercolor{block body}{bg=blue!20}
-\begin{block}
-	\centering
-	Static distribution can be done via consistent hashing on the rank of the process in the supercomputer cluster.
-\end{block}
-We use the following two rank kinds:
+\begin{itemize}
+\item Each process determines a set of function based on it's rank
+\item We use the following two rank kinds:
 	\begin{itemize}
-		\item global rank which uniquely identifies the process on all nodes
-		\item local rank which uniquely identifies the process on its node
+		\item[•] global rank
+		\item[•] local rank 
 	\end{itemize}
+\item After some experiments we decided to use static distribution
+\end{itemize}
+	\begin{figure}
+		\includegraphics[width=70mm]{image/statDistr.png}
+	\end{figure}	
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Improving efficiency}
-To improve efficiency, we reinforce method with function complexity estimation, to balance workload between processes. We base our estimation on the following two properties:
+\frametitle{Improving static distribution}
+\begin{itemize}
+\item Need to balance workload
+\item We reinforce method with function complexity estimation
+\item Our estimation based on the following properties:
 	\begin{itemize}
-		\item Function size
-		\item Number of memory Store, Load and GetElementPointer instructions
+		\item[•] Function size
+		\item[•] Number of memory work instructions
 	\end{itemize}
+\end{itemize}
+difficult = size * koefSize + (loads + stores + gep) * koefInst
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Data synchronization}
-%Borealis records the analysis results for every function and does not re-analyze already processed functions. 
-The Persistent Defect Data (PDD) is used for that and contains as entry for every encountered defect as:
+\begin{itemize}
+\item Borealis records the analysis results  
+\item Thereby we does not re-analyze already processed functions
+\item The Persistent Defect Data (PDD) is used for recording results
+\item PDD contains:
 	\begin{itemize}
-		\item Defect location
-		\item Defect type
-		\item SMT result
+		\item[•] Defect location
+		\item[•] Defect type
+		\item[•] SMT result
 	\end{itemize}
-\setbeamercolor{block body}{bg=red!20}
-\begin{block}
-	\centering
-	Transfer a full PDD across all Borealis instances takes a long time, so we synchronize a reduced PDD (rPDD) which is simply a list of already analyzed functions.
-\end{block}
+\end{itemize}
+\begin{columns} 
+\column{0.5\textwidth} 
+\begin{lstlisting}[style=crs_cpp] 
+{
+    "location": {
+        "loc": {
+            "col": 2,
+            "line": 383
+        },
+        "filename": "rarpd.c"
+    },
+    "type": "INI-03"
+}
+\end{lstlisting} 
+\end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{PDD synchronization problem}
+\begin{itemize}
+\item Transfer a full PDD takes a long time
+\item We synchronize a reduced PDD (rPDD)
+\item rPDD is simply a list of already analyzed functions
+\end{itemize}
+\begin{columns} 
+\column{0.3\textwidth} 
+\begin{lstlisting}[style=crs_cpp] 
+fun
+fun1
+...
+funN
+\end{lstlisting} 
+\end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,7 +227,22 @@ To make the synchronization we utilize a two-staged approach:
 		\item Synchronize rPDD between the processes on a single node
 		\item Synchronize rPDD between the nodes
 \end{itemize}
+	\begin{figure}
+		\includegraphics[width=115mm]{image/pddMerge}
+	\end{figure}	
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Implementation}
+\begin{itemize}
+	\item Borealis HPC implementation based on OpenMPI library
+	\item A set of compiler directives and library routines for parallel programming
+	\item Simplifies writing multi-threaded programs in C++
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
