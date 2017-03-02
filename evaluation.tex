@@ -81,10 +81,10 @@ Name & SLOC & Modules & Description \\ \hline
 \frametitle{Conclusion}
 Our main takeaways are as follows:
 	\begin{itemize}
-		\item Necessarily support for efficient distributed compilation
-		\item Several big functions can be bottleneck the analysis process
+		\item Several big functions can bottleneck the analysis
 		\item LLVM not optimized for distributed scenarios
-		\item Single-core optimizations may be difficulties for HPC version
+		\item Single-core optimizations can create difficulties for distributing
+		\item Adding nodes can increase the time of analysis
 	\end{itemize}
 \end{frame}
 
@@ -97,13 +97,17 @@ Our main takeaways are as follows:
 Borealis repository: \texttt{https://bitbucket.org/vorpal-research/borealis}
 \\ \ \\ 
 \begin{columns} 
-\column{0.5\textwidth} 
+\column{0.33\textwidth} 
 	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{image/tmpalogo} 
+		\includegraphics[width=0.99\linewidth]{image/tmpalogo} 
 	\end{figure}
-\column{0.5\textwidth} 
+\column{0.33\textwidth} 
 	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{image/polytech_logo_en} 
+		\includegraphics[width=0.99\linewidth]{image/polytech_logo_en} 
+	\end{figure}
+\column{0.33\textwidth} 
+	\begin{figure}
+		\includegraphics[width=0.99\linewidth]{image/jetbrainsLogo} 
 	\end{figure}
 \end{columns}
 \end{frame}

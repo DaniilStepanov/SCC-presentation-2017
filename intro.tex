@@ -27,7 +27,7 @@
 	\begin{itemize}
 		\item Most static analyses have big problems with performance
 		\item Our bounded model checking tool Borealis is not an exception
-		\item We decided to try \textit{scale} Borealis to multiple cores
+		\item We decided to try \textit{scaling} Borealis to multiple cores
 	\end{itemize}
 \end{frame}
 
@@ -52,9 +52,9 @@
 int x; 
 int y=8,z=0,w=0; 
 if (x) 
-z = y - 1; 
+	z = y - 1; 
 else 
-w = y + 1; 
+	w = y + 1; 
 assert (z == 7 || w == 9) 
 \end{lstlisting} 
 \column{0.5\textwidth} 
@@ -87,9 +87,9 @@ UNSAT. Assert always true
 int x; 
 int y=8,z=0,w=0; 
 if (x) 
-z = y - 1; 
+	z = y - 1; 
 else 
-w = y + 1; 
+	w = y + 1; 
 assert (z == 5 || w == 9) 
 \end{lstlisting} 
 \column{0.5\textwidth} 
@@ -104,7 +104,8 @@ w != 9
 \end{columns} 
 	\begin{block}{}
 	\centering
-SAT. Program contains a bug
+SAT. Program contains a bug \\
+Counterexample: y = 8, x = 1, w = 0, z = 7
 	\end{block}
 \end{frame}
 
@@ -131,29 +132,23 @@ SAT. Program contains a bug
 	\end{figure}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-	\frametitle{SMT formulae}
-\begin{itemize}
-	\item The resulting SMT formulae checking for correctness
-	\item Borealis asks $B \ \wedge \ \neg Q$ is satisfiable
-	\item Process is repeated for every program point which might trigger an error
-\end{itemize}
-\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \setbeamercolor{block title}{bg=white, fg=black}
-\setbeamercolor{block body}{bg=red!20}
+\setbeamercolor{block body}{bg=blue!20}
 \begin{frame}
 \frametitle{Problem}
-	\begin{itemize}
-		\item The huge number of SMT queries involved in checking process
-		\item We try to scale Borealis to multiple cores on our RSC Tornado
-	\end{itemize}
+	\begin{block}{}
+		\centering
+		The huge number of SMT queries involved in checking process
+	\end{block}
+\setbeamercolor{block body}{bg=red!20}
+	\begin{block}{}
+		\centering
+		We try to scale Borealis to multiple cores on our RSC Tornado
+	\end{block}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -165,6 +160,7 @@ SAT. Program contains a bug
 \item 712 dual-processor nodes with 1424 Intel Xeon E5-2697
 \item 64 GB of DDR4 RAM and local 120 GB SSD storage
 \item 1 PB Lustre storage
+\item InfiniBand FDR, 56 Gb/s
 \end{itemize}
 \end{frame}
 

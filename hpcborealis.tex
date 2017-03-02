@@ -4,7 +4,7 @@
 \setbeamercolor{block body}{bg=blue!20}
 
 \begin{frame}
-\frametitle{HPC Borealis}
+\frametitle{Borealis compilation scheme}
 	\begin{figure}
 		\includegraphics[width=115mm]{image/compile}
 	\end{figure}	
@@ -30,7 +30,7 @@ There are several ways to distributed compilation:
 \begin{frame}
 \frametitle{Compilation on the Lustre storage}
 \begin{itemize}
-\item Tornado cluster has a shared Lustre storage
+\item Each node access to Lustre for necessary files
 \item Lustre is slow when dealing with multiple small files
 \end{itemize}
 	\begin{figure}
@@ -63,7 +63,7 @@ There are several ways to distributed compilation:
 \item Don't increase the wall-clock time
 \end{itemize}
 	\begin{figure}
-		\includegraphics[width=70mm]{image/compSource}
+		\includegraphics[width=110mm]{image/compSource}
 	\end{figure}	
 \end{frame}
 
@@ -80,7 +80,7 @@ There are several ways to distributed compilation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-
+\frametitle{Distributed linking}
 It means there are options of how one can distribute the work:
 \begin{itemize}
 	\item Module level
@@ -95,8 +95,8 @@ It means there are options of how one can distribute the work:
 		\end{itemize}
 	\item Function level
 	    \begin{itemize}
-	        \item[•] Middle efficiency
-	        \item[•] Simple realization
+	        \item[•] Medium efficiency
+	        \item[•] Simple implementation
 	    \end{itemize}
 \end{itemize}
 \end{frame}
@@ -120,7 +120,7 @@ There are two ways how one can distribute functions between several processes:
 \begin{itemize}
 \item Master process distributes functions between several processes
 \item Based on a single producer / multiple consumers scheme
-\item If a process receives N functions, it also has run auxiliary LLVM passes N times
+\item If a process receives N functions, it also has to run auxiliary LLVM passes N times
 \end{itemize}
 	\begin{figure}
 		\includegraphics[width=70mm]{image/dynDistr.png}
@@ -154,24 +154,23 @@ There are two ways how one can distribute functions between several processes:
 \begin{itemize}
 \item Need to balance workload
 \item We reinforce method with function complexity estimation
-\item Our estimation based on the following properties:
+\item Our estimation is based on the following properties:
 	\begin{itemize}
 		\item[•] Function size
 		\item[•] Number of memory work instructions
 	\end{itemize}
 \end{itemize}
-difficult = size * koefSize + (loads + stores + gep) * koefInst
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]
-\frametitle{Data synchronization}
+\frametitle{PDD}
 \begin{itemize}
 \item Borealis records the analysis results  
-\item Thereby we does not re-analyze already processed functions
-\item The Persistent Defect Data (PDD) is used for recording results
+\item Thereby we doesn't re-analyze already processed functions
+\item Persistent Defect Data (PDD) is used for recording results
 \item PDD contains:
 	\begin{itemize}
 		\item[•] Defect location
@@ -206,15 +205,6 @@ difficult = size * koefSize + (loads + stores + gep) * koefInst
 \item We synchronize a reduced PDD (rPDD)
 \item rPDD is simply a list of already analyzed functions
 \end{itemize}
-\begin{columns} 
-\column{0.3\textwidth} 
-\begin{lstlisting}[style=crs_cpp] 
-fun
-fun1
-...
-funN
-\end{lstlisting} 
-\end{columns}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -238,10 +228,13 @@ To make the synchronization we utilize a two-staged approach:
 \begin{frame}
 \frametitle{Implementation}
 \begin{itemize}
-	\item Borealis HPC implementation based on OpenMPI library
-	\item A set of compiler directives and library routines for parallel programming
-	\item Simplifies writing multi-threaded programs in C++
+	\item Borealis HPC implementation is based on OpenMPI library
+	\item We implemented API to work with library
+	\item HPC Borealis is implemented in the form of 3 LLVM passes
 \end{itemize}
+	\begin{figure}
+		\includegraphics[width=100mm]{image/passes}
+	\end{figure}	
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
